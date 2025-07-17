@@ -22,10 +22,9 @@ const Homepage = () => {
   let line2 = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35];
   let line3 = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36];
 
-  const [formData, setFormData] = useState({
-    initialbet: "",
-    previousnumber: "",
-  });
+  const [buttonDisable, setButtonDisable] = useState(false);
+  const [initialBet, setInitialBet] = useState("");
+  const [previousNumber, setPreviousNumber] = useState("");
   const [displayName, setDisplayName] = useState({
     color: "",
     type: "",
@@ -34,16 +33,22 @@ const Homepage = () => {
     line: "",
   });
 
-  let onChange = (event) => {
-    setFormData((currData) => {
-      return { ...currData, [event.target.name]: event.target.value };
-    });
-  };
-
   let onSubmit = (event) => {
-    event.preventDefault();
-    console.log(formData);
-    setFormData({ initialbet: "", previousnumber: "" });
+    if (
+      !isNaN(initialBet) &&
+      initialBet !== "" &&
+      !isNaN(previousNumber) &&
+      previousNumber !== ""
+    ) {
+      event.preventDefault();
+      let startingAmount = initialBet;
+      setInitialBet(`Started with amount  ₹${initialBet}`);
+      setPreviousNumber("");
+      setButtonDisable(true);
+    } else {
+      event.preventDefault();
+      alert("enter valid number");
+    }
   };
 
   return (
@@ -59,18 +64,19 @@ const Homepage = () => {
         <div className="form">
           <form onSubmit={onSubmit}>
             <input
-              onChange={onChange}
+              onChange={(e) => setInitialBet(e.target.value)}
+              disabled={buttonDisable}
               type="text"
               placeholder="initial bet amount"
               name="initialbet"
-              value={formData.initialbet}
+              value={initialBet}
             ></input>
             <input
-              onChange={onChange}
+              onChange={(e) => setPreviousNumber(e.target.value)}
               type="text"
               placeholder="previous number"
               name="previousnumber"
-              value={formData.previousnumber}
+              value={previousNumber}
             ></input>
             <button type="submit">SUBMIT</button>
           </form>
