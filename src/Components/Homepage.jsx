@@ -1,6 +1,8 @@
 import "./Homepage.css";
 import logo from "../assets/logo.png";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Homepage = () => {
   let red = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36];
@@ -22,6 +24,7 @@ const Homepage = () => {
   let line2 = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35];
   let line3 = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36];
 
+  const submitCount = useRef(0);
   const [buttonDisable, setButtonDisable] = useState(false);
   const [initialBet, setInitialBet] = useState("");
   const [previousNumber, setPreviousNumber] = useState("");
@@ -32,22 +35,44 @@ const Homepage = () => {
     quadrant: "",
     line: "",
   });
+  const startingAmount = useRef(null);
 
-  let onSubmit = (event) => {
-    if (
-      !isNaN(initialBet) &&
-      initialBet !== "" &&
-      !isNaN(previousNumber) &&
-      previousNumber !== ""
-    ) {
-      event.preventDefault();
-      let startingAmount = initialBet;
-      setInitialBet(`Started with amount  ₹${initialBet}`);
-      setPreviousNumber("");
-      setButtonDisable(true);
+  const isValidNumber = (val) => {
+    return /^\d+$/.test(val); // only digits, no decimal, no negatives
+  };
+
+  let onSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!isValidNumber(previousNumber)) {
+      toast.error("Enter a valid previous number (digits only).");
+      return;
+    }
+    if (previousNumber < 0 || previousNumber > 37) {
+      alert("write number 0-36");
     } else {
-      event.preventDefault();
-      alert("enter valid number");
+      if (submitCount.current === 0) {
+        if (!/^\d+$/.test(initialBet)) {
+          toast.error("Enter a valid whole number for initial bet");
+          return;
+        }
+        if (initialBet == "") {
+          setInitialBet("Started with amount  ₹10");
+          startingAmount.current = 10;
+          submitCount.current++;
+          setButtonDisable(true);
+        } else {
+          setInitialBet(`Started with amount  ₹${initialBet}`);
+          startingAmount.current = parseInt(initialBet) || 10;
+          submitCount.current++;
+          setButtonDisable(true);
+        }
+      }
+      let lastNumber = parseInt(previousNumber);
+      let startingBetAmount = startingAmount.current;
+      setPreviousNumber("");
+      console.log(`starting bet amount : ${startingBetAmount}`);
+      console.log(`last number : ${lastNumber}`);
     }
   };
 
@@ -70,6 +95,7 @@ const Homepage = () => {
               placeholder="initial bet amount"
               name="initialbet"
               value={initialBet}
+              autoComplete="off"
             ></input>
             <input
               onChange={(e) => setPreviousNumber(e.target.value)}
@@ -77,9 +103,11 @@ const Homepage = () => {
               placeholder="previous number"
               name="previousnumber"
               value={previousNumber}
+              autoComplete="off"
             ></input>
             <button type="submit">SUBMIT</button>
           </form>
+          <ToastContainer />
         </div>
       </div>
     </div>
