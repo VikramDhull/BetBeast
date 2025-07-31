@@ -25,15 +25,12 @@ const Homepage = () => {
   let column3 = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36];
 
   const submitCount = useRef(0);
-  const [dummy, setDummy] = useState(0);
   const [buttonDisable, setButtonDisable] = useState(false);
   const [initialBet, setInitialBet] = useState("");
   const [previousNumber, setPreviousNumber] = useState("");
-  const [submittedPreviousNumber, setSubmittedPreviousNumber] = useState("");
-  const [secondPreviousNumber, setSecondPreviousNumber] = useState("");
-  // const [diffrentPreviousNumber, setdiffrentPreviousNumber] = useState("");
   const [startingAmount, setStartingAmount] = useState("");
   const [history, setHistory] = useState([]);
+
   const [displayName2, setDisplayName2] = useState({
     color: "",
     type: "",
@@ -63,33 +60,13 @@ const Homepage = () => {
     return null;
   }
 
-  useEffect(() => {
-    if (submittedPreviousNumber !== "") {
-      handleDisplayName2(submittedPreviousNumber);
-    }
-  }, [submittedPreviousNumber]);
-
-  // useEffect(() => {
-  //   if (submittedPreviousNumber !== "") {
-  //     handleDisplayName3(
-  //       submittedPreviousNumber,
-  //       secondPreviousNumber,
-  //       diffrentPreviousNumber
-  //     );
-  //   }
-  // }, [submittedPreviousNumber, secondPreviousNumber, diffrentPreviousNumber]);
-
-  useEffect(() => {
-    if (startingAmount !== "" && submittedPreviousNumber !== "") {
-      handleDisplayCalculation();
-    }
-  }, [startingAmount, submittedPreviousNumber, dummy]);
-
-  // ON SUBMIT
+  // FORM SUBMIT
   let handleFormSubmit = (event) => {
     event.preventDefault();
-    setDummy((d) => d + 1);
-    if (
+    if (!isValidNumber(initialBet) && submitCount.current === 0) {
+      toast.error("Enter a valid whole number for initial bet");
+      return;
+    } else if (
       !isValidNumber(previousNumber) ||
       parseInt(previousNumber) < 0 ||
       parseInt(previousNumber) > 36
@@ -98,99 +75,67 @@ const Homepage = () => {
       return;
     }
     if (submitCount.current === 0) {
-      if (!isValidNumber(initialBet)) {
-        toast.error("Enter a valid whole number for initial bet");
-        return;
-      } else {
-        setStartingAmount(parseInt(initialBet));
-        setInitialBet(`Started with amount  ₹${initialBet}`);
-        submitCount.current++;
-        setButtonDisable(true);
-      }
+      setStartingAmount(parseInt(initialBet));
+      setInitialBet(`Started with amount  ₹${initialBet}`);
+      submitCount.current++;
+      setButtonDisable(true);
     }
-
-    setSecondPreviousNumber(parseInt(submittedPreviousNumber));
-    setSubmittedPreviousNumber(parseInt(previousNumber));
-    // setPreviousNumber("");
-
-    // const currentNum = parseInt(previousNumber);
-    // setdiffrentPreviousNumber(
-    //   submittedPreviousNumber !== secondPreviousNumber
-    //     ? secondPreviousNumber
-    //     : diffrentPreviousNumber // or blank if desired
-    // );
-    // setSecondPreviousNumber(submittedPreviousNumber);
-    // setSubmittedPreviousNumber(currentNum);
-    // setPreviousNumber("");
     const num = parseInt(previousNumber);
-    if (num >= 0 && num <= 36) {
-      setHistory((prev) => [...prev, num]);
-      setPreviousNumber("");
-    }
+    setHistory((prev) => [...prev, num]);
+    setPreviousNumber("");
   };
 
-  const handleDisplayName2 = (num) => {
-    num = parseInt(num);
-    if (num === 0) {
-      setDisplayName2({ color: "SAME", type: "SAME", size: "SAME" });
-    } else {
-      setDisplayName2({
-        color: red.includes(num) ? "RED" : "BLACK",
-        type: even.includes(num) ? "EVEN" : "ODD",
-        size: small.includes(num) ? "SMALL" : "BIG",
-      });
-    }
-  };
-  // const handleDisplayName3 = (
-  //   submittedPreviousNumber,
-  //   secondPreviousNumber,
-  //   diffrentPreviousNumber
-  // ) => {
-  //   console.log(`submittedPreviousNumber : ${submittedPreviousNumber}`);
-  //   console.log(`secondPreviousNumber : ${secondPreviousNumber}`);
-  //   console.log(`diffrentPreviousNumber : ${diffrentPreviousNumber}`);
-  // };
-
-  // console.log(`starting amount : ${startingAmount}`);
-  // console.log(`previous number : ${submittedPreviousNumber}`);
-  // console.log(`second previus number ${secondPreviousNumber}`);
-
+  // DISPLAY
   useEffect(() => {
     if (history.length > 0) {
-      let q1 = history[history.length - 1];
-      let c1 = q1;
-      let q2 = null;
-      let c2 = null;
-      for (let i = history.length - 2; i >= 0; i--) {
-        if (getQuadrant(history[i]) !== getQuadrant(q1)) {
-          q2 = history[i];
-          break;
-        }
-      }
-      for (let i = history.length - 2; i >= 0; i--) {
-        if (getColumn(history[i]) !== getColumn(c1)) {
-          c2 = history[i];
-          break;
-        }
-      }
-      // console.log(`quadrants : ${getQuadrant(q1)},${getQuadrant(q2)}`);
-      // console.log(`columns : ${getColumn(c1)},${getColumn(c2)}`);
+      let num = history[history.length - 1];
+      if (num === 0) {
+        setDisplayName2({ color: "SAME", type: "SAME", size: "SAME" });
+        setDisplayQuadrant1("SAME");
+        setDisplayQuadrant2("SAME");
+        setDisplayColumn1("SAME");
+        setDisplayColumn2("SAME");
+      } else {
+        setDisplayName2({
+          color: red.includes(num) ? "RED" : "BLACK",
+          type: even.includes(num) ? "EVEN" : "ODD",
+          size: small.includes(num) ? "SMALL" : "BIG",
+        });
 
-      const gq1 = getQuadrant(q1);
-      const gq2 = getQuadrant(q2);
-      gq1 < gq2
-        ? (setDisplayQuadrant1(gq1), setDisplayQuadrant2(gq2))
-        : (setDisplayQuadrant1(gq2), setDisplayQuadrant2(gq1));
+        let q1 = num;
+        let c1 = num;
+        let q2 = null;
+        let c2 = null;
+        for (let i = history.length - 2; i >= 0; i--) {
+          if (history[i] === 0) continue;
+          if (getQuadrant(history[i]) !== getQuadrant(q1)) {
+            q2 = history[i];
+            break;
+          }
+        }
+        for (let i = history.length - 2; i >= 0; i--) {
+          if (history[i] === 0) continue;
+          if (getColumn(history[i]) !== getColumn(c1)) {
+            c2 = history[i];
+            break;
+          }
+        }
+        const gq1 = getQuadrant(q1);
+        const gq2 = getQuadrant(q2);
+        gq1 < gq2
+          ? (setDisplayQuadrant1(gq1), setDisplayQuadrant2(gq2))
+          : (setDisplayQuadrant1(gq2), setDisplayQuadrant2(gq1));
 
-      const gc1 = getColumn(c1);
-      const gc2 = getColumn(c2);
-      gc1 < gc2
-        ? (setDisplayColumn1(gc1), setDisplayColumn2(gc2))
-        : (setDisplayColumn1(gc2), setDisplayColumn2(gc1));
+        const gc1 = getColumn(c1);
+        const gc2 = getColumn(c2);
+        gc1 < gc2
+          ? (setDisplayColumn1(gc1), setDisplayColumn2(gc2))
+          : (setDisplayColumn1(gc2), setDisplayColumn2(gc1));
+      }
     }
   }, [history]);
 
-  const handleDisplayCalculation = () => {
+  useEffect(() => {
     if (history.length < 2) {
       setDisplayCalculation2("skip");
       setDisplayCalculation3("skip");
@@ -202,46 +147,78 @@ const Homepage = () => {
       submitCount.current++;
       return;
     }
-    if (submittedPreviousNumber == 0) {
+    if (history[history.length - 1] == 0) {
       setDisplayCalculation2((prev) => prev * 2);
       setDisplayCalculation3((prev) => prev * 3);
       return;
     }
+
     let colorVal = displayCalculation2;
     let typeVal = displayCalculation2;
     let sizeVal = displayCalculation2;
+    let last = history[history.length - 1];
+    let secondLast = 0;
+    let thirdLast = 0;
+    let count = 0;
+    for (let i = history.length - 2; i >= 0; i--) {
+      if (history[i] !== 0) {
+        count++;
+        if (count === 1) {
+          secondLast = history[i];
+        } else if (count === 2) {
+          thirdLast = history[i];
+          break;
+        }
+      }
+    }
 
     colorVal =
-      (red.includes(submittedPreviousNumber) &&
-        red.includes(secondPreviousNumber)) ||
-      (black.includes(submittedPreviousNumber) &&
-        black.includes(secondPreviousNumber))
+      (red.includes(last) && red.includes(secondLast)) ||
+      (black.includes(last) && black.includes(secondLast))
         ? startingAmount
         : colorVal * 2;
 
     typeVal =
-      (even.includes(submittedPreviousNumber) &&
-        even.includes(secondPreviousNumber)) ||
-      (odd.includes(submittedPreviousNumber) &&
-        odd.includes(secondPreviousNumber))
+      (even.includes(last) && even.includes(secondLast)) ||
+      (odd.includes(last) && odd.includes(secondLast))
         ? startingAmount
         : typeVal * 2;
 
     sizeVal =
-      (small.includes(submittedPreviousNumber) &&
-        small.includes(secondPreviousNumber)) ||
-      (big.includes(submittedPreviousNumber) &&
-        big.includes(secondPreviousNumber))
+      (small.includes(last) && small.includes(secondLast)) ||
+      (big.includes(last) && big.includes(secondLast))
         ? startingAmount
         : sizeVal * 2;
 
     let result2 = Math.ceil((colorVal + typeVal + sizeVal) / 3 / 10) * 10;
-    setDisplayCalculation2(result2);
 
-    // QUADRANT & LINE
-    let quadValue = displayCalculation3 / 2;
-    let colValue = displayCalculation3 / 2;
-  };
+    // QUAD & COL
+    let quadValue = displayCalculation3;
+    let colValue = displayCalculation3;
+
+    quadValue =
+      getQuadrant(last) === getQuadrant(secondLast) ||
+      getQuadrant(last) === getQuadrant(thirdLast)
+        ? startingAmount
+        : quadValue * 3;
+    colValue =
+      getColumn(last) === getColumn(secondLast) ||
+      getColumn(last) === getColumn(thirdLast)
+        ? startingAmount
+        : colValue * 3;
+    let result3 = Math.ceil((quadValue + colValue) / 2 / 10) * 10;
+
+    // if (result3 - result2 > 1000) {
+    //   result3 = result3 - (result3 - result2) / 2;
+    //   result2 = result2 + ((result3 - result2) * 3) / 8;
+    // } else if (result2 - result3 > 1000) {
+    //   result3 = result3 - (result3 - result2) / 2;
+    //   result2 = result2 + (result3 - result2) / 2 / 4;
+    // } else {
+    //   setDisplayCalculation2(result2);
+    //   setDisplayCalculation3(result3);
+    // }
+  }, [history]);
 
   return (
     <div className="homepage">
@@ -288,18 +265,3 @@ const Homepage = () => {
 };
 
 export default Homepage;
-
-// let n1 = parseInt(previousNumber);
-// let n2 = secondPreviousNumber;
-// let n3 = diffrentPreviousNumber;
-// let displayQ, displayC;
-
-// if (n1 === n2) {
-//   displayQ = [getQuadrant(n1), getQuadrant(n3)];
-//   displayC = [getColumn(n1), getColumn(n3)];
-// } else {
-//   displayQ = [getQuadrant(n1), getQuadrant(n2)];
-//   displayC = [getColumn(n1), getColumn(n2)];
-// }
-// setDisplayQuadrants(displayQ);
-// setDisplayColumns(displayC);
