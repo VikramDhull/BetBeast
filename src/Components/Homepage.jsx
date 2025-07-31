@@ -158,18 +158,29 @@ const Homepage = () => {
     let sizeVal = displayCalculation2;
     let last = history[history.length - 1];
     let secondLast = 0;
-    let thirdLast = 0;
-    let count = 0;
+    let thirdLastForQuad = 0;
+    let thirdLastForCol = 0;
     for (let i = history.length - 2; i >= 0; i--) {
-      if (history[i] !== 0) {
-        count++;
-        if (count === 1) {
-          secondLast = history[i];
-        } else if (count === 2) {
-          thirdLast = history[i];
-          break;
-        }
+      const current = history[i];
+      if (!secondLast && current !== 0) {
+        secondLast = current;
+        continue;
       }
+      if (
+        secondLast &&
+        !thirdLastForQuad &&
+        getQuadrant(secondLast) !== getQuadrant(current)
+      ) {
+        thirdLastForQuad = current;
+      }
+      if (
+        secondLast &&
+        !thirdLastForCol &&
+        getColumn(secondLast) !== getColumn(current)
+      ) {
+        thirdLastForCol = current;
+      }
+      if (secondLast && thirdLastForQuad && thirdLastForCol) break;
     }
 
     colorVal =
@@ -198,26 +209,32 @@ const Homepage = () => {
 
     quadValue =
       getQuadrant(last) === getQuadrant(secondLast) ||
-      getQuadrant(last) === getQuadrant(thirdLast)
+      getQuadrant(last) === getQuadrant(thirdLastForQuad)
         ? startingAmount
         : quadValue * 3;
     colValue =
       getColumn(last) === getColumn(secondLast) ||
-      getColumn(last) === getColumn(thirdLast)
+      getColumn(last) === getColumn(thirdLastForCol)
         ? startingAmount
         : colValue * 3;
     let result3 = Math.ceil((quadValue + colValue) / 2 / 10) * 10;
 
-    // if (result3 - result2 > 1000) {
-    //   result3 = result3 - (result3 - result2) / 2;
-    //   result2 = result2 + ((result3 - result2) * 3) / 8;
-    // } else if (result2 - result3 > 1000) {
-    //   result3 = result3 - (result3 - result2) / 2;
-    //   result2 = result2 + (result3 - result2) / 2 / 4;
-    // } else {
-    //   setDisplayCalculation2(result2);
-    //   setDisplayCalculation3(result3);
-    // }
+    let bigThreeDiff = result3 - result2;
+    let bigTwoDiff = result2 - result3;
+    if (bigThreeDiff > 1000) {
+      result3 = Math.ceil((result3 - bigThreeDiff / 2) / 10) * 10;
+      result2 = Math.ceil((result2 + (bigThreeDiff / 2) * 0.6666) / 10) * 10;
+      setDisplayCalculation2(result2);
+      setDisplayCalculation3(result3);
+    } else if (bigTwoDiff > 1000) {
+      result2 = Math.ceil((result2 - bigTwoDiff / 2) / 10) * 10;
+      result3 = Math.ceil((result3 + (bigTwoDiff / 2) * 1.5) / 10) * 10;
+      setDisplayCalculation2(result2);
+      setDisplayCalculation3(result3);
+    } else {
+      setDisplayCalculation2(result2);
+      setDisplayCalculation3(result3);
+    }
   }, [history]);
 
   return (
