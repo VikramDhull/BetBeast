@@ -1,12 +1,32 @@
-# React + Vite
+# Roulette Analysis Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React app that tracks roulette numbers and analyzes patterns to suggest betting amounts based on color, parity, size, quadrant, and column trends.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Input and track roulette spin results
+- Analyze number properties (Red/Black, Even/Odd, Small/Big)
+- Calculate dynamic bet amounts using historical data
+- Displays quadrant and column patterns
+- Input validation with notification alerts
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+1. Clone the repo and install dependencies:
+2. Run the app:
+
+## Usage
+
+- Enter an initial bet amount to start.
+- Submit previous roulette numbers (0-36).
+- View real-time analysis and betting suggestions.
+
+## Technologies
+
+React, React Hooks, React-Toastify, JavaScript, CSS
+
+---
+
+Feel free to contribute or reach out for improvements!
+
+Happy spinning! 🎲
