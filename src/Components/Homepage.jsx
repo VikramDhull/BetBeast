@@ -232,11 +232,11 @@ const Homepage = () => {
     const updatedCycleResults2 = [...cycleResults2, result2];
     const updatedCycleResults3 = [...cycleResults3, result3];
 
-    console.log(".........");
-    for (let i = 0; i < updatedCycleResults2.length; i++) {
-      console.log(`result2 : ${updatedCycleResults2[i]}`);
-      console.log(`result3 : ${updatedCycleResults3[i]}`);
-    }
+    // console.log(".........");
+    // for (let i = 0; i < updatedCycleResults2.length; i++) {
+    //   console.log(`result2 : ${updatedCycleResults2[i]}`);
+    //   console.log(`result3 : ${updatedCycleResults3[i]}`);
+    // }
 
     setCycleResults2(updatedCycleResults2);
     setCycleResults3(updatedCycleResults3);
@@ -247,8 +247,10 @@ const Homepage = () => {
     } else {
       let twoo = (updatedCycleResults2[0] + updatedCycleResults2[1]) / 2;
       let threee = (updatedCycleResults3[0] + updatedCycleResults3[1]) / 2;
+
       setCycleResults2([]);
       setCycleResults3([]);
+
       let bigThreeDiff = threee - twoo;
       let bigTwoDiff = twoo - threee;
       if (bigThreeDiff > 10000) {
