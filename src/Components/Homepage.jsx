@@ -43,6 +43,9 @@ const Homepage = () => {
   const [displayCalculation2, setDisplayCalculation2] = useState("");
   const [displayCalculation3, setDisplayCalculation3] = useState("");
 
+  const [cycleResults2, setCycleResults2] = useState([]);
+  const [cycleResults3, setCycleResults3] = useState([]);
+
   const isValidNumber = (val) => {
     return /^\d+$/.test(val); // only digits, no decimal, no negatives
   };
@@ -91,10 +94,10 @@ const Homepage = () => {
       let num = history[history.length - 1];
       if (num === 0) {
         setDisplayName2({ color: "SAME", type: "SAME", size: "SAME" });
-        setDisplayQuadrant1("SAME");
-        setDisplayQuadrant2("SAME");
-        setDisplayColumn1("SAME");
-        setDisplayColumn2("SAME");
+        setDisplayQuadrant1("S");
+        setDisplayQuadrant2("A");
+        setDisplayColumn1("M");
+        setDisplayColumn2("E");
       } else {
         setDisplayName2({
           color: red.includes(num) ? "RED" : "BLACK",
@@ -147,11 +150,11 @@ const Homepage = () => {
       submitCount.current++;
       return;
     }
-    if (history[history.length - 1] == 0) {
-      setDisplayCalculation2((prev) => prev * 2);
-      setDisplayCalculation3((prev) => prev * 3);
-      return;
-    }
+    // if (history[history.length - 1] == 0) {
+    //   setDisplayCalculation2((prev) => prev * 2);
+    //   setDisplayCalculation3((prev) => prev * 3);
+    //   return;
+    // }
 
     let colorVal = displayCalculation2;
     let typeVal = displayCalculation2;
@@ -184,57 +187,106 @@ const Homepage = () => {
     }
 
     colorVal =
-      (red.includes(last) && red.includes(secondLast)) ||
-      (black.includes(last) && black.includes(secondLast))
+      last !== 0 &&
+      ((red.includes(last) && red.includes(secondLast)) ||
+        (black.includes(last) && black.includes(secondLast)))
         ? startingAmount
         : colorVal * 2;
 
     typeVal =
-      (even.includes(last) && even.includes(secondLast)) ||
-      (odd.includes(last) && odd.includes(secondLast))
+      last !== 0 &&
+      ((even.includes(last) && even.includes(secondLast)) ||
+        (odd.includes(last) && odd.includes(secondLast)))
         ? startingAmount
         : typeVal * 2;
 
     sizeVal =
-      (small.includes(last) && small.includes(secondLast)) ||
-      (big.includes(last) && big.includes(secondLast))
+      last !== 0 &&
+      ((small.includes(last) && small.includes(secondLast)) ||
+        (big.includes(last) && big.includes(secondLast)))
         ? startingAmount
         : sizeVal * 2;
 
-    let result2 = Math.ceil((colorVal + typeVal + sizeVal) / 3 / 10) * 10;
+    //let result2 = Math.ceil((colorVal + typeVal + sizeVal) / 3 / 10) * 10;
+    let result2 = (colorVal + typeVal + sizeVal) / 3;
 
     // QUAD & COL
     let quadValue = displayCalculation3;
     let colValue = displayCalculation3;
 
     quadValue =
-      getQuadrant(last) === getQuadrant(secondLast) ||
-      getQuadrant(last) === getQuadrant(thirdLastForQuad)
+      last !== 0 &&
+      (getQuadrant(last) === getQuadrant(secondLast) ||
+        getQuadrant(last) === getQuadrant(thirdLastForQuad))
         ? startingAmount
         : quadValue * 3;
     colValue =
-      getColumn(last) === getColumn(secondLast) ||
-      getColumn(last) === getColumn(thirdLastForCol)
+      last !== 0 &&
+      (getColumn(last) === getColumn(secondLast) ||
+        getColumn(last) === getColumn(thirdLastForCol))
         ? startingAmount
         : colValue * 3;
-    let result3 = Math.ceil((quadValue + colValue) / 2 / 10) * 10;
+    //let result3 = Math.ceil((quadValue + colValue) / 2 / 10) * 10;
+    let result3 = (quadValue + colValue) / 2;
 
-    let bigThreeDiff = result3 - result2;
-    let bigTwoDiff = result2 - result3;
-    if (bigThreeDiff > 1000) {
-      result3 = Math.ceil((result3 - bigThreeDiff / 2) / 10) * 10;
-      result2 = Math.ceil((result2 + (bigThreeDiff / 2) * 0.6666) / 10) * 10;
-      setDisplayCalculation2(result2);
-      setDisplayCalculation3(result3);
-    } else if (bigTwoDiff > 1000) {
-      result2 = Math.ceil((result2 - bigTwoDiff / 2) / 10) * 10;
-      result3 = Math.ceil((result3 + (bigTwoDiff / 2) * 1.5) / 10) * 10;
-      setDisplayCalculation2(result2);
-      setDisplayCalculation3(result3);
-    } else {
-      setDisplayCalculation2(result2);
-      setDisplayCalculation3(result3);
+    const updatedCycleResults2 = [...cycleResults2, result2];
+    const updatedCycleResults3 = [...cycleResults3, result3];
+
+    console.log(".........");
+    for (let i = 0; i < updatedCycleResults2.length; i++) {
+      console.log(`result2 : ${updatedCycleResults2[i]}`);
+      console.log(`result3 : ${updatedCycleResults3[i]}`);
     }
+
+    setCycleResults2(updatedCycleResults2);
+    setCycleResults3(updatedCycleResults3);
+
+    if (updatedCycleResults2.length < 2) {
+      setDisplayCalculation2(displayCalculation2);
+      setDisplayCalculation3(displayCalculation3);
+    } else {
+      let twoo = (updatedCycleResults2[0] + updatedCycleResults2[1]) / 2;
+      let threee = (updatedCycleResults3[0] + updatedCycleResults3[1]) / 2;
+      setCycleResults2([]);
+      setCycleResults3([]);
+      let bigThreeDiff = threee - twoo;
+      let bigTwoDiff = twoo - threee;
+      if (bigThreeDiff > 10000) {
+        threee = Math.ceil((threee - bigThreeDiff / 2) / 10) * 10;
+        twoo = Math.ceil((twoo + (bigThreeDiff / 2) * 0.6666) / 10) * 10;
+        setDisplayCalculation2(twoo);
+        setDisplayCalculation3(threee);
+      } else if (bigTwoDiff > 10000) {
+        twoo = Math.ceil((twoo - bigTwoDiff / 2) / 10) * 10;
+        threee = Math.ceil((threee + (bigTwoDiff / 2) * 1.5) / 10) * 10;
+        setDisplayCalculation2(twoo);
+        setDisplayCalculation3(threee);
+      } else {
+        twoo = Math.ceil(twoo / 10) * 10;
+        threee = Math.ceil(threee / 10) * 10;
+        setDisplayCalculation2(twoo);
+        setDisplayCalculation3(threee);
+      }
+    }
+
+    // let bigThreeDiff = result3 - result2;
+    // let bigTwoDiff = result2 - result3;
+    // if (bigThreeDiff > 1000) {
+    //   result3 = Math.ceil((result3 - bigThreeDiff / 2) / 10) * 10;
+    //   result2 = Math.ceil((result2 + (bigThreeDiff / 2) * 0.6666) / 10) * 10;
+    //   setDisplayCalculation2(result2);
+    //   setDisplayCalculation3(result3);
+    // } else if (bigTwoDiff > 1000) {
+    //   result2 = Math.ceil((result2 - bigTwoDiff / 2) / 10) * 10;
+    //   result3 = Math.ceil((result3 + (bigTwoDiff / 2) * 1.5) / 10) * 10;
+    //   setDisplayCalculation2(result2);
+    //   setDisplayCalculation3(result3);
+    // } else {
+    //   result2 = Math.ceil(result2 / 10) * 10;
+    //   result3 = Math.ceil(result3 / 10) * 10;
+    //   setDisplayCalculation2(result2);
+    //   setDisplayCalculation3(result3);
+    // }
   }, [history]);
 
   return (
