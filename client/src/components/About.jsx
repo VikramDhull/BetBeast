@@ -16,16 +16,17 @@ const About = () => {
       style={{ backgroundImage: `url(${about})` }}
     >
       <motion.div
-        className="flex flex-col justify-between items-center h-full py-4 sm:py-28 px-2 sm:px-28"
+        className="flex flex-col justify-between items-center h-full py-6 sm:py-28 px-2 sm:px-28"
         initial={{ opacity: 0.2, y: 100 }}
         transition={{ duration: 1.2 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <h1 className="orbitron text-white font-bold text-3xl sm:text-4xl">
+        <h1 className="orbitron text-white font-bold text-2xl sm:text-4xl">
           Redefining roulette with precision and elegance.
         </h1>
-        <p className="play text-white text-[16px] sm:text-2xl text-start mt-2 sm:mt-10">
+
+        <p className="play text-white text-[16px] sm:text-2xl text-start mt-10 sm:mt-10">
           For over a decade, I’ve lived and breathed roulette — not as a game of
           luck, but as a challenge of logic, numbers, and precision. With a
           strong background in mathematics,

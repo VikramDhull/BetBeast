@@ -258,13 +258,13 @@ const Login = () => {
           />
         </div>
         {state !== "Login" && (
-          <div className="border  flex items-center gap-2 rounded-full mt-4">
+          <div className="border flex items-center gap-1 rounded-full mt-4">
             <input
               onChange={(e) => setOtp(e.target.value)}
               value={otp}
               type="text"
               placeholder="Enter OTP"
-              className="outline-none text-sm py-2 px-6"
+              className="outline-none text-sm py-2 px-6 min-w-0 flex-1"
             />
             <button
               disabled={isOtpSubmitted}
