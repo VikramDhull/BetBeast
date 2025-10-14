@@ -10,10 +10,23 @@ const app = express();
 
 app.use(express.json());
 
+// const corsOptions = {
+//   origin: process.env.FRONTEND_URL, // your React app origin
+//   credentials: true, // allow sending cookies/auth credentials
+// };
+const allowedOrigins = ["http://localhost:5173", "https://betbeast.vercel.app"];
+
 const corsOptions = {
-  origin: process.env.FRONTEND_URL, // your React app origin
-  credentials: true, // allow sending cookies/auth credentials
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
 };
+
 app.use(cors(corsOptions));
 
 await connectDB();
