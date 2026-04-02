@@ -57,43 +57,52 @@ BetBeast is a professional-grade, full-stack web application designed to help us
 
 2. Install dependencies for frontend and backend:
 
-### Frontend
+#### Frontend :
 
 ```bash
 cd client
 npm install
 ```
 
-### Backend
+#### Backend :
 
+```bash
 cd ../server
 npm install
+```
 
-3. Create .env file in the backend directory with the following keys:4
-   MONGO_URI=<Your MongoDB URI>
-   JWT_SECRET=<Your JWT Secret>
-   RAZORPAY_KEY_ID=<Razorpay Key ID>
-   RAZORPAY_KEY_SECRET=<Razorpay Key Secret>
-   CURRENCY=INR
-   FRONTEND_URL=<Your Frontend URL>
+3. Create .env file in the backend directory with the following keys:
+
+```bash
+ MONGO_URI=<Your MongoDB URI>
+ JWT_SECRET=<Your JWT Secret>
+ RAZORPAY_KEY_ID=<Razorpay Key ID>
+ RAZORPAY_KEY_SECRET=<Razorpay Key Secret>
+ CURRENCY=INR
+ FRONTEND_URL=<Your Frontend URL>
+```
 
 4. Start the development servers:
 
 ### Backend
 
+```bash
 npm run start
+```
 
 ### Frontend
 
+```bash
 cd ../client
 npm run dev
+```
 
 ## Usage :
 
-Register/Login – Sign up using your email and verify via OTP.
-Purchase Credits – Add credits securely through Razorpay to use strategies.
-Use Strategies – Input roulette spin results and follow guidance for SafeSquares, TheNet, or TheMatrix.
-Track Performance – View win/loss, total bets won, and profits on your profile.
+1. Register/Login – Sign up using your email and verify via OTP.
+2. Purchase Credits – Add credits securely through Razorpay to use strategies.
+3. Use Strategies – Input roulette spin results and follow guidance for SafeSquares, TheNet, or TheMatrix.
+4. Track Performance – View win/loss, total bets won, and profits on your profile.
 
 ## Screenshots :
 
@@ -115,9 +124,9 @@ Track Performance – View win/loss, total bets won, and profits on your profile
 
 ## Future Enhancements
 
-Real-time roulette simulation with automated spin input
-Advanced analytics dashboard for betting patterns
-Additional original strategies
+1. Real-time roulette simulation with automated spin input
+2. Advanced analytics dashboard for betting patterns
+3. Additional original strategies
 
 ## License
 
@@ -125,5 +134,5 @@ This project is for educational and personal use. Proprietary strategy algorithm
 
 ## Contact
 
-Developed by Vikram Dhull
+Developed by **Vikram Dhull**  
 For inquiries, reach out via imvikramdhull@gmail.com
