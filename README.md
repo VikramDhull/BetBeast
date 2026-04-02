@@ -50,7 +50,7 @@ BetBeast is a professional-grade, full-stack web application designed to help us
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/betbeast.git
+   git clone https://github.com/VikramDhull/BetBeast
    cd betbeast
 
    ```
@@ -59,8 +59,10 @@ BetBeast is a professional-grade, full-stack web application designed to help us
 
 ### Frontend
 
+```bash
 cd client
 npm install
+```
 
 ### Backend
 
